@@ -1,6 +1,6 @@
 # volto-multilingual-widget
 
-A widget for Volto to insert values for any language enabled
+A widget for [Volto](https://github.com/plone/volto) to insert values for any language enabled
 
 To be used with mrs-developer, see [Volto docs](https://docs.voltocms.com/customizing/add-ons/) for further usage informations.
 
@@ -105,4 +105,51 @@ yarn
 
 ## Usage
 
-Work in progress
+This is meant to be used on JSON or text fields, because it will send to the registry a string with a JSON inside.
+
+In your Volto project, in `src/config.js` you can bind this widget for an id, example:
+
+```js
+import MultilingualWidget from 'volto-multilingual-widget'
+
+export const widgets = {
+  ...defaultWidgets,
+  id: {
+    ...defaultWidgets.id,
+    cookie_consent_configuration: MultilingualWidget(),
+  },
+}
+```
+
+### Custom widget
+
+If you see, you're not using the component directly, but you call as a function.
+As a parameter, you can pass a custom widget for language specific values, like:
+
+```jsx
+import MultilingualWidget from 'volto-multilingual-widget'
+
+const CustomWidget = ({ id, value, onChange }) => (
+  <input type="number" id={id} value={value} onChange={onChange} />
+)
+
+export const widgets = {
+  ...defaultWidgets,
+  id: {
+    ...defaultWidgets.id,
+    cookie_consent_configuration: MultilingualWidget(CustomWidget),
+  },
+}
+```
+
+## Results
+
+What will be sent to Plone is in this format, with a key for any enabled language in your Plone site:
+
+```json
+{
+  "it": "Il tuo testo in italiano",
+  "en": "Your text in English",
+  "eo": "Via esperanta teksto"
+}
+```

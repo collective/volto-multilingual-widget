@@ -105,9 +105,4 @@ yarn
 
 ## Usage
 
-In your Volto project, add the reducer:
-
-
-And wherever you want to add the component, import and use it like this:
-
-
+Work in progress

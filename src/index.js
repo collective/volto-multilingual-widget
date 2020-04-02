@@ -13,6 +13,18 @@ const messages = defineMessages({
 
 const DefaultWidget = ({ id, value, onChange }) => <textarea id={id} value={value} onChange={onChange} />
 
+const srOnlyStyles = {
+  position: 'absolute',
+  width: '1px',
+  height: '1px',
+  padding: '0',
+  margin: '-1px',
+  overflow: 'hidden',
+  clip: 'rect(0, 0, 0, 0)',
+  whiteSpace: 'nowrap',
+  border: '0',
+}
+
 const MultilingualWidget = (Widget = DefaultWidget) => ({ value, id, onChange, required, title, description }) => {
   const intl = useIntl()
   const content = useSelector(state => state.content?.subrequests?.languageControlpanel?.data)
@@ -38,7 +50,7 @@ const MultilingualWidget = (Widget = DefaultWidget) => ({ value, id, onChange, r
     menuItem: title,
     render: () => (
       <Tab.Pane id="multilingual-item">
-        <label htmlFor={`multilingual-text-${token}`} className="sr-only">
+        <label htmlFor={`multilingual-text-${token}`} style={srOnlyStyles}>
           {intl.formatMessage(messages.valueForLang, { lang: title })}
         </label>
         <Widget

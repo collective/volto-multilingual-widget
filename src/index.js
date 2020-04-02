@@ -38,14 +38,14 @@ const MultilingualWidget = (Widget = DefaultWidget) => ({ value, id, onChange, r
     menuItem: title,
     render: () => (
       <Tab.Pane id="multilingual-item">
-        <label htmlFor={`multilingual-text-${token}`}>
+        <label htmlFor={`multilingual-text-${token}`} className="sr-only">
           {intl.formatMessage(messages.valueForLang, { lang: title })}
-          <Widget
-            id={`multilingual-text-${token}`}
-            value={cookieConsentConfig[token] ?? ''}
-            onChange={handleChangeText(token)}
-          />
         </label>
+        <Widget
+          id={`multilingual-text-${token}`}
+          value={cookieConsentConfig[token] ?? ''}
+          onChange={handleChangeText(token)}
+        />
       </Tab.Pane>
     ),
   }))

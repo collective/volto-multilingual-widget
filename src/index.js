@@ -4,14 +4,18 @@ import { Tab, Grid, Form } from 'semantic-ui-react'
 import { useSelector, useDispatch } from 'react-redux'
 import { getContent } from '@plone/volto/actions'
 
+import EditorWidget from './EditorWidget'
+
 const messages = defineMessages({
   valueForLang: {
     id: 'value_for_lang',
     defaultMessage: 'Value for language {lang}',
   },
+  placeholder: {
+    id: 'multilingual_text_placeholder',
+    defaultMessage: 'Type some text...',
+  },
 })
-
-const DefaultWidget = ({ id, value, onChange }) => <textarea id={id} value={value} onChange={onChange} />
 
 const srOnlyStyles = {
   position: 'absolute',
@@ -25,19 +29,19 @@ const srOnlyStyles = {
   border: '0',
 }
 
-const MultilingualWidget = (Widget = DefaultWidget) => ({ value, id, onChange, required, title, description }) => {
+const MultilingualWidget = (Widget = EditorWidget) => ({ value, id, onChange, required, title, description }) => {
   const intl = useIntl()
   const content = useSelector(state => state.content?.subrequests?.languageControlpanel?.data)
   const dispatch = useDispatch()
 
   const cookieConsentConfig = JSON.parse(value)
 
-  const handleChangeText = lang => e => {
+  const handleChangeText = lang => value => {
     onChange(
       id,
       JSON.stringify({
         ...cookieConsentConfig,
-        [lang]: e.target.value,
+        [lang]: value,
       }),
     )
   }
@@ -55,6 +59,7 @@ const MultilingualWidget = (Widget = DefaultWidget) => ({ value, id, onChange, r
         </label>
         <Widget
           id={`multilingual-text-${token}`}
+          placeholder={intl.formatMessage(messages.placeholder)}
           value={cookieConsentConfig[token] ?? ''}
           onChange={handleChangeText(token)}
         />
@@ -72,7 +77,7 @@ const MultilingualWidget = (Widget = DefaultWidget) => ({ value, id, onChange, r
             </div>
           </Grid.Column>
           <Grid.Column width="8" className="multilingual-widget">
-            {content?.data?.available_languages && <Tab panes={tabPanes} />}
+            {content?.data?.available_languages && <Tab renderActiveOnly panes={tabPanes} />}
           </Grid.Column>
         </Grid.Row>
       </Grid>

@@ -36,7 +36,7 @@ const MultilingualWidget = (Widget = EditorWidget) => ({ value, id, onChange, re
 
   const cookieConsentConfig = JSON.parse(value)
 
-  const handleChangeText = lang => value => {
+  const handleChangeLangValue = lang => value => {
     onChange(
       id,
       JSON.stringify({
@@ -60,8 +60,8 @@ const MultilingualWidget = (Widget = EditorWidget) => ({ value, id, onChange, re
         <Widget
           id={`multilingual-text-${token}`}
           placeholder={intl.formatMessage(messages.placeholder)}
-          value={cookieConsentConfig[token] ?? ''}
-          onChange={handleChangeText(token)}
+          value={cookieConsentConfig[token]}
+          onChange={handleChangeLangValue(token)}
         />
       </Tab.Pane>
     ),
@@ -77,7 +77,7 @@ const MultilingualWidget = (Widget = EditorWidget) => ({ value, id, onChange, re
             </div>
           </Grid.Column>
           <Grid.Column width="8" className="multilingual-widget">
-            {content?.data?.available_languages && <Tab renderActiveOnly panes={tabPanes} />}
+            {content?.data?.available_languages && <Tab panes={tabPanes} />}
           </Grid.Column>
         </Grid.Row>
       </Grid>

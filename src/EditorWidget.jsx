@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Editor from 'draft-js-plugins-editor'
-import { convertFromRaw, convertToRaw, EditorState, RichUtils } from 'draft-js'
+import { convertToRaw, EditorState, RichUtils } from 'draft-js'
 import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent'
 import createInlineToolbarPlugin from 'draft-js-inline-toolbar-plugin'
+import { stateFromHTML } from 'draft-js-import-html'
+import { stateToHTML } from 'draft-js-export-html'
 import { isEqual } from 'lodash'
 
 import { settings } from '~/config'
@@ -22,7 +24,7 @@ class EditorWidget extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
     placeholder: PropTypes.string,
-    value: PropTypes.oneOf([PropTypes.object, PropTypes.string]),
+    value: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
     id: PropTypes.string.isRequired,
   }
 
@@ -37,27 +39,33 @@ class EditorWidget extends Component {
 
     // eslint-disable-next-line no-undef
     if (__CLIENT__) {
-      let editorState
-
-      try {
-        if (props.value) {
-          editorState = EditorState.createWithContent(convertFromRaw(props.value))
-        } else {
-          editorState = EditorState.createEmpty()
-        }
-      } catch (e) {
-        editorState = EditorState.createEmpty()
-      }
-
       const inlineToolbarPlugin = createInlineToolbarPlugin({
         structure: settings.richTextEditorInlineToolbarButtons,
       })
 
       this.state = {
-        editorState,
+        editorState: this.createEditorState(props.value),
         inlineToolbarPlugin,
         addNewBlockOpened: false,
       }
+    }
+  }
+
+  createEditorState = value => {
+    let editorState
+    if (value) {
+      const contentState = stateFromHTML(value)
+      editorState = EditorState.createWithContent(contentState)
+    } else {
+      editorState = EditorState.createEmpty()
+    }
+
+    return editorState
+  }
+
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (this.props.id !== nextProps.id) {
+      this.setState({ editorState: this.createEditorState(nextProps.value) })
     }
   }
 
@@ -71,7 +79,7 @@ class EditorWidget extends Component {
     if (
       !isEqual(convertToRaw(editorState.getCurrentContent()), convertToRaw(this.state.editorState.getCurrentContent()))
     ) {
-      this.props.onChange(convertToRaw(editorState.getCurrentContent()))
+      this.props.onChange(stateToHTML(editorState.getCurrentContent()))
     }
     this.setState({ editorState })
   }
@@ -116,4 +124,4 @@ class EditorWidget extends Component {
   }
 }
 
-export default React.memo(EditorWidget)
+export default EditorWidget

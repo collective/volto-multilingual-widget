@@ -11,7 +11,7 @@ This is meant to be used on JSON or text fields, because it will send to the reg
 In your Volto project, in `src/config.js` you can bind this widget for an id, example:
 
 ```js
-import MultilingualWidget from 'volto-multilingual-widget/MultilingualWidget'
+import { MultilingualWidget } from 'volto-multilingual-widget'
 
 ...
 
@@ -31,7 +31,7 @@ The default widget used for the form is a rich text editor, which saves strings 
 As a parameter, you can pass a custom widget for language specific values, like:
 
 ```jsx
-import MultilingualWidget from 'volto-multilingual-widget/MultilingualWidget'
+import { MultilingualWidget } from 'volto-multilingual-widget'
 
 ...
 

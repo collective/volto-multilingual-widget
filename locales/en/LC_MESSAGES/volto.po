@@ -11,10 +11,10 @@ msgstr ""
 "Content-Transfer-Encoding: \n"
 "Plural-Forms: \n"
 
- #: MultilingualWidget
+#: MultilingualWidget
 msgid "multilingual_text_placeholder"
-msgstr ""
+msgstr "Type some text..."
 
 #: MultilingualWidget
 msgid "value_for_lang"
-msgstr ""
+msgstr "Value for language {lang}"

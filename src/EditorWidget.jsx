@@ -7,8 +7,8 @@ import createInlineToolbarPlugin from 'draft-js-inline-toolbar-plugin'
 import { stateFromHTML } from 'draft-js-import-html'
 import { stateToHTML } from 'draft-js-export-html'
 import { isEqual } from 'lodash'
+import config from '@plone/volto/registry';
 
-import { settings } from '~/config'
 
 /**
  * Text editor class.
@@ -40,7 +40,7 @@ class EditorWidget extends Component {
     // eslint-disable-next-line no-undef
     if (__CLIENT__) {
       const inlineToolbarPlugin = createInlineToolbarPlugin({
-        structure: settings.richTextEditorInlineToolbarButtons,
+        structure: config.settings.richTextEditorInlineToolbarButtons,
       })
 
       this.state = {
@@ -102,9 +102,9 @@ class EditorWidget extends Component {
           id={this.props.id}
           onChange={this.onChangeText}
           editorState={this.state.editorState}
-          plugins={[this.state.inlineToolbarPlugin, ...settings.richTextEditorPlugins]}
+          plugins={[this.state.inlineToolbarPlugin, ...config.settings.richTextEditorPlugins]}
           blockRenderMap={this.props.blockRenderMap}
-          blockStyleFn={settings.blockStyleFn}
+          blockStyleFn={config.settings.blockStyleFn}
           placeholder={this.props.placeholder}
           ref={node => {
             this.node = node

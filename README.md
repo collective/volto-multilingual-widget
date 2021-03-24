@@ -6,6 +6,8 @@ To be used with mrs-developer, see [Volto docs](https://docs.voltocms.com/custom
 
 ## Usage
 
+> If you're using Volto < 12, then use [v1.0.1](https://github.com/collective/volto-multilingual-widget/tree/v1.0.1)
+
 This is meant to be used on JSON or text fields, because it will send to the registry a string with a JSON inside.
 
 In your Volto project, in `src/config.js` you can bind this widget for an id, example:

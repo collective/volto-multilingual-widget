@@ -47,8 +47,8 @@ export const widgets = {
   ...defaultWidgets,
   id: {
     ...defaultWidgets.id,
-    news_type: MultilingualWidget(CustomWidget),
-    cookie_consent_configuration: MultilingualWidget(ArrayWidget, defaultValue),
+    news_type: MultilingualWidget(ArrayWidget, defaultValue),
+    cookie_consent_configuration: MultilingualWidget(CustomWidget),
   },
 }
 ```

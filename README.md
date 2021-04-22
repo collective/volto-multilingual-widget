@@ -40,15 +40,19 @@ import { MultilingualWidget } from 'volto-multilingual-widget'
 const CustomWidget = ({ id, value, placeholder, onChange }) => (
   <input type="number" id={id} placeholder={placeholder} value={value} onChange={onChange} />
 )
+const defaultValue = '' // could be any;
 
 export const widgets = {
   ...defaultWidgets,
   id: {
     ...defaultWidgets.id,
-    cookie_consent_configuration: MultilingualWidget(CustomWidget),
+    news_type: MultilingualWidget(CustomWidget),
+    cookie_consent_configuration: MultilingualWidget(CustomWidget, defaultValue),
   },
 }
 ```
+
+If needed, you can pass a second argument for the default value for the custom widget.
 
 Multilingual widget is agnostic about value types and handles the multilingual aspect more than data specific ones.
 So you could handle boolean or numeric values, which will be saved in a JSON as described below.

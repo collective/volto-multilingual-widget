@@ -34,20 +34,21 @@ As a parameter, you can pass a custom widget for language specific values, like:
 
 ```jsx
 import { MultilingualWidget } from 'volto-multilingual-widget'
+import { ArrayWidget } from '@plone/volto/components';
 
 ...
 
 const CustomWidget = ({ id, value, placeholder, onChange }) => (
   <input type="number" id={id} placeholder={placeholder} value={value} onChange={onChange} />
 )
-const defaultValue = '' // could be any;
+const defaultValue = []; // could be any, defaults to ''
 
 export const widgets = {
   ...defaultWidgets,
   id: {
     ...defaultWidgets.id,
     news_type: MultilingualWidget(CustomWidget),
-    cookie_consent_configuration: MultilingualWidget(CustomWidget, defaultValue),
+    cookie_consent_configuration: MultilingualWidget(ArrayWidget, defaultValue),
   },
 }
 ```

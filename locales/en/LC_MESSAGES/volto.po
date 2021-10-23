@@ -12,9 +12,11 @@ msgstr ""
 "Plural-Forms: \n"
 
 #: MultilingualWidget
+# defaultMessage: Type some text...
 msgid "multilingual_text_placeholder"
 msgstr "Type some text..."
 
 #: MultilingualWidget
+# defaultMessage: Value for language {lang}
 msgid "value_for_lang"
 msgstr "Value for language {lang}"

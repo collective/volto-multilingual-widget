@@ -1,3 +1,11 @@
-export { default as MultilingualWidget } from './MultilingualWidget'
+import loadable from '@loadable/component';
+export { default as MultilingualWidget } from './MultilingualWidget';
 
-export default config => config
+const applyConfig = (config) => {
+  config.settings.loadables = {
+    ...config.settings.loadables,
+    draftJsExportHtml: loadable.lib(() => import('draft-js-export-html')),
+  };
+};
+
+export default applyConfig;

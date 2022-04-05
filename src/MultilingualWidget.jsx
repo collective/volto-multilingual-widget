@@ -4,7 +4,7 @@ import { Tab, Grid, Form } from 'semantic-ui-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getContent } from '@plone/volto/actions';
 
-import EditorWidget from './EditorWidget';
+import { WysiwygWidget } from '@plone/volto/components';
 
 const messages = defineMessages({
   valueForLang: {
@@ -29,7 +29,7 @@ const srOnlyStyles = {
   border: '0',
 };
 
-const MultilingualWidget = (Widget = EditorWidget, defaultValue = '') => ({
+const MultilingualWidget = (Widget = WysiwygWidget, defaultValue = '') => ({
   value = defaultValue,
   id,
   onChange,
@@ -47,12 +47,12 @@ const MultilingualWidget = (Widget = EditorWidget, defaultValue = '') => ({
 
   const valueObj = typeof value === 'string' ? JSON.parse(value) : value;
 
-  const handleChangeLangValue = (lang) => (u, v) => {
+  const handleChangeLangValue = (lang) => (fid, v) => {
     onChange(
       id,
       JSON.stringify({
         ...valueObj,
-        [lang]: v || u,
+        [lang]: v.data,
       }),
     );
   };
@@ -76,13 +76,15 @@ const MultilingualWidget = (Widget = EditorWidget, defaultValue = '') => ({
         >
           {intl.formatMessage(messages.valueForLang, { lang: title })}
         </label>
+
         <Widget
           id={`multilingual-text-${token}-${id}`}
           placeholder={intl.formatMessage(messages.placeholder)}
-          value={valueObj[token] ?? defaultValue}
+          value={{ data: valueObj[token] ?? defaultValue }}
           title={title}
           description={description}
           onChange={handleChangeLangValue(token)}
+          wrapped={false}
         />
       </Tab.Pane>
     ),

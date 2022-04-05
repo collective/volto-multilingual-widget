@@ -1,21 +1,24 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import Editor from 'draft-js-plugins-editor'
-import { convertToRaw, EditorState, RichUtils } from 'draft-js'
-import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent'
-import createInlineToolbarPlugin from 'draft-js-inline-toolbar-plugin'
-import { stateFromHTML } from 'draft-js-import-html'
-import { stateToHTML } from 'draft-js-export-html'
-import { isEqual } from 'lodash'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
+import { compose } from 'redux';
+import { injectIntl } from 'react-intl';
+
+import loadable from '@loadable/component';
+
+import { isEqual } from 'lodash';
+
+import { injectLazyLibs } from '@plone/volto/helpers/Loadable/Loadable';
 import config from '@plone/volto/registry';
 
+const Editor = loadable(() => import('draft-js-plugins-editor'));
 
 /**
  * Text editor class.
  * @class EditorWidget
  * @extends Component
  */
-class EditorWidget extends Component {
+class TextEditorWidgetComponent extends Component {
   /**
    * Property types.
    * @property {Object} propTypes Property types.
@@ -26,7 +29,7 @@ class EditorWidget extends Component {
     placeholder: PropTypes.string,
     value: PropTypes.oneOfType([PropTypes.object, PropTypes.string]),
     id: PropTypes.string.isRequired,
-  }
+  };
 
   /**
    * Constructor
@@ -35,37 +38,45 @@ class EditorWidget extends Component {
    * @constructs EditorWidget
    */
   constructor(props) {
-    super(props)
+    super(props);
+
+    const { settings } = config;
+
+    this.draftConfig = settings.richtextEditorSettings(props);
+
+    const createInlineToolbarPlugin = props.draftJsInlineToolbarPlugin.default;
 
     // eslint-disable-next-line no-undef
     if (__CLIENT__) {
       const inlineToolbarPlugin = createInlineToolbarPlugin({
-        structure: config.settings.richTextEditorInlineToolbarButtons,
-      })
+        structure: this.draftConfig.richTextEditorInlineToolbarButtons,
+      });
 
       this.state = {
         editorState: this.createEditorState(props.value),
         inlineToolbarPlugin,
         addNewBlockOpened: false,
-      }
+      };
     }
   }
 
-  createEditorState = value => {
-    let editorState
+  createEditorState = (value) => {
+    const { EditorState } = this.props.draftJs;
+    const { stateFromHTML } = this.props.draftJsImportHtml;
+    let editorState;
     if (value) {
-      const contentState = stateFromHTML(value)
-      editorState = EditorState.createWithContent(contentState)
+      const contentState = stateFromHTML(value);
+      editorState = EditorState.createWithContent(contentState);
     } else {
-      editorState = EditorState.createEmpty()
+      editorState = EditorState.createEmpty();
     }
 
-    return editorState
-  }
+    return editorState;
+  };
 
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (this.props.id !== nextProps.id) {
-      this.setState({ editorState: this.createEditorState(nextProps.value) })
+      this.setState({ editorState: this.createEditorState(nextProps.value) });
     }
   }
 
@@ -75,14 +86,19 @@ class EditorWidget extends Component {
    * @param {object} editorState Editor state.
    * @returns {undefined}
    */
-  onChangeText = editorState => {
+  onChangeText = (editorState) => {
+    const { convertToRaw } = this.props.draftJs;
+    const { stateToHTML } = this.props.draftJsExportHtml;
     if (
-      !isEqual(convertToRaw(editorState.getCurrentContent()), convertToRaw(this.state.editorState.getCurrentContent()))
+      !isEqual(
+        convertToRaw(editorState.getCurrentContent()),
+        convertToRaw(this.state.editorState.getCurrentContent()),
+      )
     ) {
-      this.props.onChange(stateToHTML(editorState.getCurrentContent()))
+      this.props.onChange(stateToHTML(editorState.getCurrentContent()));
     }
-    this.setState({ editorState })
-  }
+    this.setState({ editorState });
+  };
 
   /**
    * Render method.
@@ -92,36 +108,70 @@ class EditorWidget extends Component {
   render() {
     // eslint-disable-next-line no-undef
     if (__SERVER__) {
-      return <div />
+      return <div />;
     }
 
-    const { InlineToolbar } = this.state.inlineToolbarPlugin
+    const { InlineToolbar } = this.state.inlineToolbarPlugin;
+    const isSoftNewlineEvent = this.props.draftJsLibIsSoftNewlineEvent.default;
+    const { RichUtils } = this.props.draftJs;
+
     return (
       <div className="multilingual-editor-widget" id={this.props.id}>
         <Editor
           id={this.props.id}
           onChange={this.onChangeText}
           editorState={this.state.editorState}
-          plugins={[this.state.inlineToolbarPlugin, ...config.settings.richTextEditorPlugins]}
-          blockRenderMap={this.props.blockRenderMap}
-          blockStyleFn={config.settings.blockStyleFn}
+          plugins={[
+            this.state.inlineToolbarPlugin,
+            ...this.draftConfig.richTextEditorPlugins,
+          ]}
+          blockRenderMap={this.draftConfig.extendedBlockRenderMap}
+          blockStyleFn={this.draftConfig.blockStyleFn}
+          customStyleMap={this.draftConfig.customStyleMap}
           placeholder={this.props.placeholder}
-          ref={node => {
-            this.node = node
+          ref={(node) => {
+            this.node = node;
           }}
-          handleReturn={e => {
+          handleReturn={(e) => {
             if (isSoftNewlineEvent(e)) {
-              this.onChangeText(RichUtils.insertSoftNewline(this.state.editorState))
-              return 'handled'
+              this.onChangeText(
+                RichUtils.insertSoftNewline(this.state.editorState),
+              );
+              return 'handled';
             }
 
-            return {}
+            return {};
           }}
         />
-        {<InlineToolbar />}
+        {this.node && <InlineToolbar />}
       </div>
-    )
+    );
   }
 }
 
-export default EditorWidget
+export const EditorWidget = compose(
+  injectIntl,
+  injectLazyLibs([
+    'draftJs',
+    'draftJsLibIsSoftNewlineEvent',
+    'draftJsFilters',
+    'draftJsInlineToolbarPlugin',
+    'draftJsBlockBreakoutPlugin',
+    'draftJsCreateInlineStyleButton',
+    'draftJsCreateBlockStyleButton',
+    'immutableLib',
+    'draftJsImportHtml',
+    'draftJsExportHtml',
+    // TODO: add all plugin dependencies, also in Wysiwyg and Cell
+  ]),
+)(TextEditorWidgetComponent);
+
+const Preloader = (props) => {
+  const [loaded, setLoaded] = React.useState(false);
+  React.useEffect(() => {
+    Editor.load().then(() => setLoaded(true));
+  }, []);
+  return loaded ? <EditorWidget {...props} /> : null;
+};
+
+export default Preloader;

@@ -10,8 +10,7 @@
     "release-it": "*"
   },
   "dependencies": {
-    "@plone/scripts": "^1.0.3",
-    "draft-js-export-html": "^1.4.1"
+    "@plone/scripts": "^1.0.3"
   },
   "peerDependencies": {
     "@plone/volto": ">=15.0.0"

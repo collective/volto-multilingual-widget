@@ -80,7 +80,11 @@ const MultilingualWidget = (Widget = WysiwygWidget, defaultValue = '') => ({
         <Widget
           id={`multilingual-text-${token}-${id}`}
           placeholder={intl.formatMessage(messages.placeholder)}
-          value={{ data: valueObj[token] ?? defaultValue }}
+          value={
+            Widget === WysiwygWidget
+              ? { data: valueObj[token] ?? defaultValue }
+              : valueObj[token] ?? defaultValue
+          }
           title={title}
           description={description}
           onChange={handleChangeLangValue(token)}

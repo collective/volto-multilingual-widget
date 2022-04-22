@@ -52,7 +52,7 @@ const MultilingualWidget = (Widget = WysiwygWidget, defaultValue = '') => ({
       id,
       JSON.stringify({
         ...valueObj,
-        [lang]: v.data,
+        [lang]: Widget === WysiwygWidget ? v.data : v,
       }),
     );
   };

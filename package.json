@@ -7,13 +7,12 @@
   "author": "Nicola Zambello",
   "license": "MIT",
   "devDependencies": {
-    "release-it": "*"
+    "@plone/scripts": "^2.0.0",
+    "release-it": "^14.10.1"
   },
-  "dependencies": {
-    "@plone/scripts": "^1.0.3"
-  },
+  "dependencies": {},
   "peerDependencies": {
-    "@plone/volto": ">=15.0.0"
+    "@plone/volto": ">=16.0.0-alpha.38"
   },
   "scripts": {
     "i18n": "rm -rf build/messages && NODE_ENV=production i18n -a",

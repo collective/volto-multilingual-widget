@@ -1,6 +1,6 @@
 {
   "name": "volto-multilingual-widget",
-  "version": "2.2.4",
+  "version": "3.0.0",
   "description": "A widget for Volto to insert values for any language enabled",
   "main": "src/index.js",
   "repository": "https://github.com/collective/volto-multilingual-widget",

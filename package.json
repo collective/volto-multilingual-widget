@@ -10,7 +10,6 @@
     "@plone/scripts": "^2.0.0",
     "release-it": "^14.10.1"
   },
-  "dependencies": {},
   "peerDependencies": {
     "@plone/volto": ">=16.0.0-alpha.38"
   },

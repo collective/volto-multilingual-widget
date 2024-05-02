@@ -4,7 +4,7 @@
   "description": "A widget for Volto to insert values for any language enabled",
   "main": "src/index.js",
   "repository": "https://github.com/collective/volto-multilingual-widget",
-  "author": "Nicola Zambello",
+  "author": "RedTurtle",
   "license": "MIT",
   "devDependencies": {
     "@plone/scripts": "^2.0.0",
@@ -16,5 +16,8 @@
   "scripts": {
     "i18n": "rm -rf build/messages && NODE_ENV=production i18n -a",
     "release": "release-it"
+  },
+  "dependencies": {
+    "@plone/components": "2.0.0-alpha.7"
   }
 }

@@ -1,9 +1,13 @@
 import React, { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { Tab, TabPane, Grid, Form } from 'semantic-ui-react';
+import { Grid, Form } from 'semantic-ui-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getContent } from '@plone/volto/actions';
+import { Tabs } from '@plone/components'
+import { Tab, TabList, TabPanel } from 'react-aria-components';
 import config from '@plone/volto/registry';
+
+import '@plone/components/src/styles/basic/Tabs.css';
 
 const messages = defineMessages({
   valueForLang: {
@@ -14,19 +18,11 @@ const messages = defineMessages({
     id: 'multilingual_text_placeholder',
     defaultMessage: 'Type some text...',
   },
+  languages:{
+    id: 'multilingual_languages',
+    defaultMessage: 'Languages',
+  },
 });
-
-const srOnlyStyles = {
-  position: 'absolute',
-  width: '1px',
-  height: '1px',
-  padding: '0',
-  margin: '-1px',
-  overflow: 'hidden',
-  clip: 'rect(0, 0, 0, 0)',
-  whiteSpace: 'nowrap',
-  border: '0',
-};
 
 const MultilingualWidget =
   (Widget, defaultValue = '') =>
@@ -65,37 +61,6 @@ const MultilingualWidget =
       );
     }, [dispatch]);
 
-    const tabPanes = availableLanguages?.map(({ title, token }) => ({
-      menuItem: title,
-      render: () => (
-        <TabPane
-          id={`multilingual-item-${token}-${id}`}
-          key={`multilingual-item-${token}-${id}`}
-        >
-          <label
-            htmlFor={`multilingual-text-${token}-${id}`}
-            style={srOnlyStyles}
-          >
-            {intl.formatMessage(messages.valueForLang, { lang: title })}
-          </label>
-
-          <WidgetComponent
-            id={`multilingual-text-${token}-${id}`}
-            placeholder={intl.formatMessage(messages.placeholder)}
-            value={
-              WidgetComponent === DefaultWidget && editor == 'draftjs'
-                ? { data: valueObj[token] ?? defaultValue }
-                : valueObj[token] ?? defaultValue
-            }
-            title={title}
-            description={description}
-            onChange={handleChangeLangValue(token)}
-            wrapped={false}
-          />
-        </TabPane>
-      ),
-    }));
-
     return (
       <Form.Field inline required={required} id={id}>
         <Grid>
@@ -110,7 +75,33 @@ const MultilingualWidget =
               id="multilingual-item"
               className="multilingual-widget"
             >
-              {availableLanguages && <Tab panes={tabPanes} />}
+              {availableLanguages &&
+                <Tabs>
+                  <TabList aria-label={intl.formatMessage(messages.languages)}>
+                    {availableLanguages?.map(({ title, token }) =>{
+                        const label = intl.formatMessage(messages.valueForLang, { lang: title });
+                        return <Tab id={`multilingual-item-${token}-${id}`} aria-label={label}>{title}</Tab>
+                      }
+                    )}
+                  </TabList>
+                  {availableLanguages?.map(({ title, token }) =>
+                      <TabPanel id={`multilingual-item-${token}-${id}`}>
+                          <WidgetComponent
+                            id={`multilingual-text-${token}-${id}`}
+                            placeholder={intl.formatMessage(messages.placeholder)}
+                            value={
+                              WidgetComponent === DefaultWidget && editor == 'draftjs'
+                                ? { data: valueObj[token] ?? defaultValue }
+                                : valueObj[token] ?? defaultValue
+                            }
+                            title={title}
+                            description={description}
+                            onChange={handleChangeLangValue(token)}
+                            wrapped={false}
+                          />
+                      </TabPanel>
+                    )}
+                </Tabs>}
             </Grid.Column>
           </Grid.Row>
         </Grid>

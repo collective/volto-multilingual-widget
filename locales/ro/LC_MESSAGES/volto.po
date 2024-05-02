@@ -12,6 +12,11 @@ msgstr ""
 "Plural-Forms: \n"
 
 #: MultilingualWidget
+# defaultMessage: Languages
+msgid "multilingual_languages"
+msgstr ""
+
+#: MultilingualWidget
 # defaultMessage: Type some text...
 msgid "multilingual_text_placeholder"
 msgstr ""

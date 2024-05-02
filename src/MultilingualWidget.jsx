@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
+import cx from 'classnames';
 import { defineMessages, useIntl } from 'react-intl';
-import { Grid, Form } from 'semantic-ui-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getContent } from '@plone/volto/actions';
-import { Tabs } from '@plone/components'
+import { Tabs } from '@plone/components';
 import { Tab, TabList, TabPanel } from 'react-aria-components';
 import config from '@plone/volto/registry';
 
@@ -18,7 +18,7 @@ const messages = defineMessages({
     id: 'multilingual_text_placeholder',
     defaultMessage: 'Type some text...',
   },
-  languages:{
+  languages: {
     id: 'multilingual_languages',
     defaultMessage: 'Languages',
   },
@@ -62,50 +62,59 @@ const MultilingualWidget =
     }, [dispatch]);
 
     return (
-      <Form.Field inline required={required} id={id}>
-        <Grid>
-          <Grid.Row>
-            <Grid.Column width="4">
+      <div className={cx('inline field', { required: required })} id={id}>
+        <div className="ui grid">
+          <div className="row">
+            <div className="four wide column">
               <div className="wrapper">
                 <label htmlFor="multilingual-item">{title}</label>
               </div>
-            </Grid.Column>
-            <Grid.Column
-              width="8"
+            </div>
+            <div
               id="multilingual-item"
-              className="multilingual-widget"
+              className="eight wide column multilingual-widget"
             >
-              {availableLanguages &&
+              {availableLanguages && (
                 <Tabs>
                   <TabList aria-label={intl.formatMessage(messages.languages)}>
-                    {availableLanguages?.map(({ title, token }) =>{
-                        const label = intl.formatMessage(messages.valueForLang, { lang: title });
-                        return <Tab id={`multilingual-item-${token}-${id}`} aria-label={label}>{title}</Tab>
-                      }
-                    )}
+                    {availableLanguages?.map(({ title, token }) => {
+                      const label = intl.formatMessage(messages.valueForLang, {
+                        lang: title,
+                      });
+                      return (
+                        <Tab
+                          id={`multilingual-item-${token}-${id}`}
+                          aria-label={label}
+                        >
+                          {title}
+                        </Tab>
+                      );
+                    })}
                   </TabList>
-                  {availableLanguages?.map(({ title, token }) =>
-                      <TabPanel id={`multilingual-item-${token}-${id}`}>
-                          <WidgetComponent
-                            id={`multilingual-text-${token}-${id}`}
-                            placeholder={intl.formatMessage(messages.placeholder)}
-                            value={
-                              WidgetComponent === DefaultWidget && editor == 'draftjs'
-                                ? { data: valueObj[token] ?? defaultValue }
-                                : valueObj[token] ?? defaultValue
-                            }
-                            title={title}
-                            description={description}
-                            onChange={handleChangeLangValue(token)}
-                            wrapped={false}
-                          />
-                      </TabPanel>
-                    )}
-                </Tabs>}
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
-      </Form.Field>
+                  {availableLanguages?.map(({ title, token }) => (
+                    <TabPanel id={`multilingual-item-${token}-${id}`}>
+                      <WidgetComponent
+                        id={`multilingual-text-${token}-${id}`}
+                        placeholder={intl.formatMessage(messages.placeholder)}
+                        value={
+                          WidgetComponent === DefaultWidget &&
+                          editor == 'draftjs'
+                            ? { data: valueObj[token] ?? defaultValue }
+                            : valueObj[token] ?? defaultValue
+                        }
+                        title={title}
+                        description={description}
+                        onChange={handleChangeLangValue(token)}
+                        wrapped={false}
+                      />
+                    </TabPanel>
+                  ))}
+                </Tabs>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
     );
   };
 
